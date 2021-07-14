@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using URLShortener.Core.DAL;
+using URLShortener.Core.Config;
 using URLShortener.Core.Models;
 using URLShortener.Core.Services.Interfaces;
 

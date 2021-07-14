@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace URLShortener.Core.DAL
+namespace URLShortener.Core.Config
 {
     public class MongoDBSettings
     {
