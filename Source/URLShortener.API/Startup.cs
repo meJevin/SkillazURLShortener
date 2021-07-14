@@ -29,6 +29,15 @@ namespace URLShortener.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MongoDBSettings>(Configuration
+                .GetSection(nameof(MongoDBSettings)));
+
+            services.Configure<GUIDShortenerSettings>(
+                set => set.BasePath = Configuration.GetValue<string>("BasePath"));
+
+            services.AddTransient<IURLRepository, MongoDBURLRepository>();
+            services.AddTransient<IShortenedURLGenerator, GUIDShortenedURLGenerator>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
