@@ -16,6 +16,7 @@ namespace URLShortener.API.Controllers
     /// 
     /// Views increase in the <see cref="URLController"/>
     /// </summary>
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class GoController : ControllerBase
     {
         readonly IURLRepository _repo;
