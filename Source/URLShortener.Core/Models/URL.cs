@@ -16,5 +16,6 @@ namespace URLShortener.Core.Models
         public string Shortened { get; set; }
         public string Original { get; set; }
         public int ViewCount { get; set; }
+        public string UserId { get; set; }
     }
 }
