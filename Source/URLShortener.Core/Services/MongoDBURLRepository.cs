@@ -45,5 +45,10 @@ namespace URLShortener.Core.Services
 
             return toUpdate;
         }
+
+        public IEnumerable<URL> GetAllByUserId(string userId)
+        {
+            return _urls.Find(url => url.UserId == userId).ToList();
+        }
     }
 }
