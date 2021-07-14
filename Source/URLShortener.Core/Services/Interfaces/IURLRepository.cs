@@ -10,6 +10,7 @@ namespace URLShortener.Core.Services.Interfaces
         URL Save(URL toSave);
         URL Update(URL toUpdate);
         IEnumerable<URL> GetAll();
+        IEnumerable<URL> GetAllByUserId(string userId);
         URL FindByShortened(string shortened);
     }
 }
