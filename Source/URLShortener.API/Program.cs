@@ -23,4 +23,9 @@ namespace URLShortener.API
                     webBuilder.UseStartup<Startup>();
                 });
     }
+
+    public static class Constants
+    {
+        public static string SessionUserNameKey = "SessionUserName";
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using URLShortener.API.Middleware;
 using URLShortener.Core.Config;
 using URLShortener.Core.Services;
 using URLShortener.Core.Services.Interfaces;
@@ -43,6 +45,15 @@ namespace URLShortener.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "URLShortener.API", Version = "v1" });
             });
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.Cookie.HttpOnly = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(1);
+                options.Cookie.Name = ".URLShortener.Session";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,7 +70,12 @@ namespace URLShortener.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
+
+            app.UseMiddleware<UserWithoutRegistrationMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -45,14 +46,18 @@ namespace URLShortener.API.Controllers
                 Original = urlToShorten,
                 Shortened = shortenedURL.ToString(),
                 ViewCount = 0,
+                UserId = HttpContext.Session.GetString(Constants.SessionUserNameKey),
             };
 
             URLRepository.Save(toSave);
 
-            return Ok();
+            return Ok(toSave.Shortened);
         }
 
         // получение оригинала по сокращенной, с увеличением счетчика посещений
+
+        // честно я не совсем понял, почему в запросе на оригинал с бэка мы должны поднимать кол-во просмотров
+        // но как было написано в тг так и сделал. настоящий редирект осуществляется по другому эндпоинту в GoController.cs
         [HttpGet]
         [Route("original")]
         public IActionResult Original(string shortenedUrl)
@@ -73,7 +78,7 @@ namespace URLShortener.API.Controllers
 
             URLRepository.Update(dbURL);
 
-            return Redirect(dbURL.Original);
+            return Ok(dbURL.Original);
         }
 
         // получение списка всех сокращенных ссылок с количеством переходов
@@ -85,6 +90,28 @@ namespace URLShortener.API.Controllers
                 .GetAll().Select(url =>
             new 
             { 
+                Shortened = url.Shortened,
+                ViewCount = url.ViewCount,
+            });
+
+            if (!result.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(result);
+        }
+
+        // Опциональные усложнение: показывать ему только его ссылки
+        [HttpGet]
+        [Route("my")]
+        public IActionResult AllForCurrentUser()
+        {
+            var result = URLRepository
+                .GetAllByUserId(HttpContext.Session.GetString(Constants.SessionUserNameKey))
+                .Select(url =>
+            new
+            {
                 Shortened = url.Shortened,
                 ViewCount = url.ViewCount,
             });
